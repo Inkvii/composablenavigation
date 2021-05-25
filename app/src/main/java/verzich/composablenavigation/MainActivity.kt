@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import verzich.composablenavigation.screen.Counter
 import verzich.composablenavigation.screen.MainMenu
 import verzich.composablenavigation.screen.Management
 import verzich.composablenavigation.ui.theme.ComposableNavigationTheme
@@ -35,6 +36,7 @@ class MainActivity : ComponentActivity() {
 						)
 					}
 					composable(NavigationEnum.MANAGEMENT.toString()) { Management() }
+					composable(NavigationEnum.COUNTER.toString()) { Counter(navController = navController) }
 				}
 			}
 		}

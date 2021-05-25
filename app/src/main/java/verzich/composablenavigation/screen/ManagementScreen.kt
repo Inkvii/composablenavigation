@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import verzich.composablenavigation.model.Building
+import verzich.composablenavigation.model.BuildingWithTimer
 import verzich.composablenavigation.model.UserViewModel
 
 @Composable
@@ -33,12 +34,12 @@ fun Management() {
 			SingleBuilding(it, userViewModel)
 		}
 
-		Button(onClick = { userViewModel.addBuilding() }) {
-			Text(text = "Add me")
-		}
-		Button(onClick = { userViewModel.removeBuilding(userViewModel.buildings.value[0]) }) {
-			Text(text = "Remove me")
-		}
+//		Button(onClick = { userViewModel.addBuilding() }) {
+//			Text(text = "Add me")
+//		}
+//		Button(onClick = { userViewModel.removeBuilding(userViewModel.buildings.value[0]) }) {
+//			Text(text = "Remove me")
+//		}
 
 	}
 }
@@ -47,15 +48,18 @@ fun Management() {
 @Composable
 fun SingleBuildingPreview() {
 	val userViewModel: UserViewModel = viewModel()
-	val building = Building("name", 1, 123, 120.0)
+	val building = Building("name", 1, 123, 120.0, 10, 100.12.toBigDecimal())
 
 	Column() {
-		SingleBuilding(building = building, userViewModel = userViewModel)
+		SingleBuilding(
+			buildingWithTimer = BuildingWithTimer(10, building),
+			userViewModel = userViewModel
+		)
 	}
 }
 
 @Composable
-fun SingleBuilding(building: Building, userViewModel: UserViewModel) {
+fun SingleBuilding(buildingWithTimer: BuildingWithTimer, userViewModel: UserViewModel) {
 	Card(Modifier.padding(10.dp)) {
 
 		Row(
@@ -70,9 +74,9 @@ fun SingleBuilding(building: Building, userViewModel: UserViewModel) {
 			) {
 
 				Row() {
-					Text(building.name)
+					Text(buildingWithTimer.building.name)
 					Text(
-						text = "(upgrade: ${building.costToUpgrade()} €)",
+						text = "(upgrade: ${buildingWithTimer.building.costToUpgrade()} €)",
 						fontSize = 10.sp,
 						modifier = Modifier
 							.padding(horizontal = 1.dp)
@@ -80,15 +84,23 @@ fun SingleBuilding(building: Building, userViewModel: UserViewModel) {
 					)
 				}
 				ProgressBar(progress = 0.2f)
+				Text(
+					"Remaining: ${buildingWithTimer.remainingTime} s to get ${
+						buildingWithTimer.building.calulateReward().setScale(2).toPlainString()
+					} €", fontSize = 10.sp
+				)
 			}
 
 			Button(
-				onClick = { userViewModel.upgradeBuilding(building) }, modifier = Modifier
+				onClick = { userViewModel.upgradeBuilding(buildingWithTimer) }, modifier = Modifier
 					.weight(1f)
 					.padding(2.dp)
-					.fillMaxHeight(), enabled = userViewModel.canUpgradeBuilding(building)
+					.fillMaxHeight(), enabled = userViewModel.canUpgradeBuilding(buildingWithTimer.building)
 			) {
-				Text(text = "${building.name} to lvl ${building.level + 1}", fontSize = 10.sp)
+				Text(
+					text = "${buildingWithTimer.building.name} to lvl ${buildingWithTimer.building.level + 1}",
+					fontSize = 10.sp
+				)
 
 			}
 		}

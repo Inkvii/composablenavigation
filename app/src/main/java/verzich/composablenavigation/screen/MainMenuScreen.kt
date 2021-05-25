@@ -54,6 +54,15 @@ fun MainMenu(navController: NavController) {
 						Text(text = "To placeholder")
 					}
 				}
+				Row(modifier) {
+
+					Button(
+						onClick = { navController.navigate(NavigationEnum.COUNTER.toString()) },
+						modifier = Modifier.weight(1F)
+					) {
+						Text(text = "To counter")
+					}
+				}
 			}
 
 		}
